@@ -5,6 +5,7 @@ const { Server } = require("socket.io");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 const dotenv = require("dotenv");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -24,8 +25,22 @@ app.get("/health", (req, res) => {
   res.status(200).json({ ok: true, ts: Date.now() });
 });
 
-// Serve Static Files from React App (Client)
-app.use(express.static(path.join(__dirname, "client/dist")));
+const distDir = path.join(__dirname, "client", "dist");
+const distIndex = path.join(distDir, "index.html");
+const shouldServeClient =
+  process.env.SERVE_CLIENT === "true" && fs.existsSync(distIndex);
+
+// If you want the backend to serve the built frontend too:
+// - set SERVE_CLIENT=true
+// - ensure client is built into client/dist
+if (shouldServeClient) {
+  app.use(express.static(distDir));
+} else {
+  // Render-friendly default: frontend hosted elsewhere.
+  app.get("/", (req, res) => {
+    res.status(200).json({ ok: true, service: "binaryblitz-backend" });
+  });
+}
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -51,13 +66,6 @@ const dbConfig = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 };
-
-console.log("DB Config:", {
-  host: dbConfig.host,
-  port: dbConfig.port,
-  user: dbConfig.user,
-  database: dbConfig.database,
-});
 
 let db;
 let dbInitInFlight = false;
@@ -317,10 +325,12 @@ async function saveScoresToDB() {
   }
 }
 
-// Handle any requests that don't match the above
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/dist/index.html"));
-});
+// If serving the client build, send index.html for SPA routes.
+if (shouldServeClient) {
+  app.get("*", (req, res) => {
+    res.sendFile(distIndex);
+  });
+}
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
