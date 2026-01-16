@@ -33,15 +33,13 @@ import {
 import MedianDisplay from "./components/MedianDisplay";
 
 function getDefaultServerUrl() {
-  const envUrl = import.meta?.env?.VITE_SERVER_URL;
-  console.log("Using server URL:", envUrl);
+  const envUrl = import.meta.env.VITE_SERVER_URL;
   if (envUrl) return envUrl;
 
   // Local dev convenience: Vite runs on 5173, backend on 3001.
   if (window.location.hostname === "localhost") return "http://localhost:3001";
 
   // Production fallback when served by backend.
-  console.log("Using origin as server URL");
   return window.location.origin;
 }
 
