@@ -51,20 +51,20 @@ Set:
 
 ### Backend env on Render
 
-Set the DB variables + CORS:
+Set CORS + admin secret:
 
-- `DB_HOST=...`
-- `DB_PORT=3306` (optional)
-- `DB_USER=...` (alias supported: `DB_USERNAME`)
-- `DB_PASS=...` (alias supported: `DB_PASSWORD`)
-- `DB_NAME=...` (alias supported: `DB_DATABASE`)
 - `ADMIN_SECRET=...` (used by the admin URL)
 - `CORS_ORIGIN=https://<your-vercel-app>.vercel.app` (or comma-separated list)
+
+This backend is schemaless/in-memory only:
+
+- Scores and player lists are kept in server memory and reset on restart.
+- If Render sleeps/restarts mid-game, the current test will reset.
 
 ### Render keep-alive
 
 When the admin page is open, the frontend pings the backend `/health` every ~45s to reduce Render cold-start downtime.
 
-## Database (Alwaysdata)
+## Database
 
-- Run the SQL in `schema.sql` to create `game_scores`.
+No database is required for this version.
