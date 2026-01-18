@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import PlayerView from "../components/PlayerView.jsx";
-export default function PlayerPage({ socket }) {
+import { useSocket } from "../context/SocketContext.jsx";
+export default function PlayerPage() {
+  const socket = useSocket();
   const [joined, setJoined] = useState(false);
   const [gameState, setGameState] = useState("WAITING");
   const [round, setRound] = useState(1);

@@ -9,6 +9,7 @@ export default function AdminPanel({ socketData, onAction, authState }) {
   const { gameState, round, players } = socketData;
   const [showAverage, setShowAverage] = useState(false);
   const sortedPlayers = [...players].sort((a, b) => b.scoreR1 - a.scoreR1);
+  console.log(players);
 
   const graphData = [...players]
     .sort((a, b) => a.scoreR1 - b.scoreR1)
@@ -20,7 +21,7 @@ export default function AdminPanel({ socketData, onAction, authState }) {
     }));
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 text-white p-6 overflow-y-auto">
+    <div className="flex flex-col min-h-screen bg-slate-900 text-white p-6">
       <div className="mb-8 border-b border-slate-700 pb-4 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2 text-purple-400">

@@ -8,19 +8,15 @@ export default function GameApp() {
   return (
     <BrowserRouter>
       <SocketProvider>
-        {(socket) => (
-          <div className="w-full h-screen font-sans bg-black">
-            <Routes>
-              <Route path="/" element={<Navigate to="/game" replace />} />
-              <Route path="/game" element={<PlayerPage socket={socket} />} />
-              <Route
-                path="/game/:adminSecret"
-                element={<AdminPage socket={socket} />}
-              />
-              <Route path="*" element={<Navigate to="/game" replace />} />
-            </Routes>
-          </div>
-        )}
+        <div className="w-full h-screen font-sans bg-black">
+          <Routes>
+            <Route path="/" element={<Navigate to="/game" replace />} />
+            {/* ✅ Remove socket={socket} */}
+            <Route path="/game" element={<PlayerPage />} />
+            <Route path="/game/:adminSecret" element={<AdminPage />} />
+            <Route path="*" element={<Navigate to="/game" replace />} />
+          </Routes>
+        </div>
       </SocketProvider>
     </BrowserRouter>
   );

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getDefaultServerUrl } from "../utils/serverUrl.js";
+import getDefaultServerUrl from "../utils/serverUrl.js";
 import AdminPanel from "../components/AdminPanel";
-export default function AdminPage({ socket }) {
+import { useSocket } from "../context/SocketContext.jsx";
+export default function AdminPage() {
+  const socket = useSocket();
   const { adminSecret } = useParams();
   const [authState, setAuthState] = useState("pending");
   const [adminData, setAdminData] = useState({

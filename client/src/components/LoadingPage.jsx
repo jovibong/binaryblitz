@@ -1,4 +1,5 @@
-export default function LoadingPage() {
+import { Wifi } from "lucide-react";
+export default function LoadingPage({ connectError }) {
   return (
     <div className="w-full h-screen bg-black flex flex-col items-center justify-center text-white">
       <Wifi className="w-16 h-16 text-purple-500 animate-pulse mb-4" />
