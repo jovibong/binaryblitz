@@ -151,6 +151,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("submit_score", (data) => {
+    if (gameState.status !== "ROUND_OVER") return;
     const player = gameState.players[socket.id];
     if (!player) return;
     const score = Number(data?.score);
@@ -166,8 +167,11 @@ io.on("connection", (socket) => {
     if (!isAdminSocket(socket)) return;
     if (gameState.round !== 1) return;
     if (gameState.status !== "ROUND_OVER") return;
-    gameState.round = 2;
+
+    // Advance the round
     gameState.status = "WAITING";
+    gameState.round = 2;
+
     io.emit("round_change", 2);
     io.emit("game_state_change", "WAITING");
     io.to("admin_room").emit("update_admin", getAdminData());
