@@ -10,6 +10,10 @@ const dotenv = require("dotenv");
 // Load backend env (Render uses dashboard env vars; locally use .env)
 dotenv.config({ path: path.join(__dirname, ".env") });
 
+const max_users = process.env.MAX_USERS
+  ? parseInt(process.env.MAX_USERS, 10)
+  : 10;
+
 const app = express();
 app.use(
   cors({
@@ -84,8 +88,8 @@ io.on("connection", (socket) => {
       socket.emit("game_error", "Game finished");
       return;
     }
-    if (Object.keys(gameState.players).length >= 10) {
-      socket.emit("game_error", "Game is full (10 players)");
+    if (Object.keys(gameState.players).length >= max_users) {
+      socket.emit("game_error", `Game is full (${max_users} players)`);
       return;
     }
 
@@ -151,7 +155,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("submit_score", (data) => {
-    if (gameState.status !== "ROUND_OVER") return;
+    if (gameState.status == "WAITING") return;
     const player = gameState.players[socket.id];
     if (!player) return;
     const score = Number(data?.score);
